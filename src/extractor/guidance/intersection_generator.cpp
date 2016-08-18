@@ -62,6 +62,7 @@ Intersection IntersectionGenerator::getConnectedRoads(const NodeID from_node,
     const auto &via_data = node_based_graph.GetEdgeData(via_eid);
     const auto number_of_incoming_lanes = via_data.road_classification.GetNumberOfLanes();
     const util::Coordinate turn_coordinate = node_info_list[turn_node];
+    bool print = false;
     for (const EdgeID onto_edge : node_based_graph.GetAdjacentEdgeRange(turn_node))
     {
         BOOST_ASSERT(onto_edge != SPECIAL_EDGEID);
@@ -130,15 +131,15 @@ Intersection IntersectionGenerator::getConnectedRoads(const NodeID from_node,
                     //          |
                     //          d
                     //             \
-                        //                \
-                        //                   e
+                    //                \
+                    //                   e
                     //
                     // is converted to:
                     //
                     // a ------ b ------ c
                     //             \
-                        //                \
-                        //                   e
+                    //                \
+                    //                   e
                     //
                     // for turn node `b`, offset_coordinate `d` and lookahead_coordinate `e`
                     const auto corrected_lon =
@@ -166,7 +167,7 @@ Intersection IntersectionGenerator::getConnectedRoads(const NodeID from_node,
                 const auto number_of_destination_lanes =
                     onto_data.road_classification.GetNumberOfLanes();
                 // if the number of lanes is not specified, we don't adjust the turn-angles
-                if (0 == number_of_destination_lanes)
+                if (1 >= number_of_destination_lanes)
                     return getRepresentativeCoordinate(from_node,
                                                        turn_node,
                                                        via_eid,
@@ -205,7 +206,7 @@ Intersection IntersectionGenerator::getConnectedRoads(const NodeID from_node,
             // and the form of the way
             const auto third_coordinate = [&]() {
                 // if the number of lanes is not specified, we don't adjust the turn-angles
-                if (0 == number_of_incoming_lanes)
+                if (1 >= number_of_incoming_lanes)
                     return getRepresentativeCoordinate(turn_node,
                                                        to_node,
                                                        onto_edge,
@@ -269,6 +270,8 @@ Intersection IntersectionGenerator::getConnectedRoads(const NodeID from_node,
                 std::cout << "Changed Angle from " << compare_angle << " to " << angle
                           << " at: " << std::setprecision(12) << toFloating(turn_coordinate.lat)
                           << " " << toFloating(turn_coordinate.lon) << std::endl;
+
+                print = true;
             }
             if (std::abs(angle) < std::numeric_limits<double>::epsilon())
                 has_uturn_edge = true;
@@ -299,6 +302,13 @@ Intersection IntersectionGenerator::getConnectedRoads(const NodeID from_node,
 
     BOOST_ASSERT(intersection[0].turn.angle >= 0. &&
                  intersection[0].turn.angle < std::numeric_limits<double>::epsilon());
+
+    if (print)
+    {
+        std::cout << "[intersection]\n";
+        for (auto road : intersection)
+            std::cout << "\t" << toString(road) << std::endl;
+    }
 
     const auto valid_count =
         boost::count_if(intersection, [](const ConnectedRoad &road) { return road.entry_allowed; });

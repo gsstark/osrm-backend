@@ -170,3 +170,84 @@ Feature: Simple Turns
             | g,c       | turn,road,road      | depart,turn right,arrive           |
             | g,f       | turn,road,road      | depart,turn left,arrive            |
             | c,f       | road,turn,road,road | depart,turn right,turn left,arrive |
+
+    # http://www.openstreetmap.org/#map=19/52.48753/13.52838
+    Scenario: Traffic Circle
+        Given the node map
+            |   |   |   |   |   |   |   |   |   | l |   |   |   |   |   |   |   |   |   |   |   |
+            |   |   |   |   |   | m |   |   |   |   |   |   | k |   |   |   |   |   |   |   |   |
+            |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |
+            |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |
+            |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   | j |   |   |   |   |   |
+            |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |
+            |   |   | n |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |
+            |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |
+            |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |
+            |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |
+            |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   | i |   |   |   | p |
+            |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |
+            |   | o |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |
+            |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |
+            |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   | h |   |   |   |   |
+            |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |
+            | a |   | b |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |
+            |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |
+            |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   | g |   |   |   |   |   |
+            |   |   |   | c |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |
+            |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |
+            |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |
+            |   |   |   |   |   | d |   |   |   |   |   |   |   | f |   |   |   |   |   |   |   |
+            |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |
+            |   |   |   |   |   |   |   |   |   | e |   |   |   |   |   |   |   |   |   |   |   |
+
+        And the ways
+            | nodes           | highway     | name | lanes | oneway | junction   |
+            | ab              | residential | road | 1     | yes    |            |
+            | ip              | residential | road | 1     | yes    |            |
+            | bcdefghijklmnob | residential | road | 1     | yes    | roundabout |
+
+       When I route I should get
+            | waypoints | route               | turns                                   | intersections |
+            | a,c       | road,road,road      | depart,roundabout-exit-undefined,arrive |               |
+
+
+    #http://www.openstreetmap.org/#map=19/52.47587/13.53600
+    Scenario: Curved Turn
+        Given the node map
+            |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   | h |
+            | a |   |   |   |   |   |   | b |   |   |   |   |   |   |   |   |
+            |   |   |   |   |   |   |   |   |   |   |   | c |   |   |   |   |
+            |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |
+            |   |   |   |   |   |   |   |   |   |   |   |   |   | d |   |   |
+            |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |
+            |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |
+            |   |   |   |   |   |   |   |   |   |   |   |   |   |   | e |   |
+            |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |
+            |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |
+            |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |
+            |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |
+            |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |
+            |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |
+            |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   | f |
+            |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |
+            |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |
+            |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |
+            |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |
+            |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |
+            |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |
+            |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |
+            |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |
+            |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   | g |
+
+        And the ways
+            | nodes | highway     | name   | lanes |
+            | abcd  | residential | first  | 1     |
+            | defg  | residential | second | 1     |
+            | dh    | residential | turn   | 1     |
+
+        When I route I should get
+            | waypoints | route               | turns                        |
+            | a,g       | first,second,second | depart,new name right,arrive |
+            | a,h       | first,turn,turn     | depart,turn left,arrive      |
+            | g,h       | second,turn,turn    | depart,turn right,arrive     |
+            | g,a       | second,first,first  | depart,new name left,arrive  |
