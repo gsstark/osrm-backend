@@ -265,7 +265,7 @@ Intersection IntersectionGenerator::getConnectedRoads(const NodeID from_node,
             angle = util::coordinate_calculation::computeAngle(
                 first_coordinate, turn_coordinate, third_coordinate);
 
-            if (angularDeviation(angle, compare_angle) > 20)
+            if (angularDeviation(angle, compare_angle) > 5)
             {
                 std::cout << "Changed Angle from " << compare_angle << " to " << angle
                           << " at: " << std::setprecision(12) << toFloating(turn_coordinate.lat)

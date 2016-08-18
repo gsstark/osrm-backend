@@ -251,3 +251,30 @@ Feature: Simple Turns
             | a,h       | first,turn,turn     | depart,turn left,arrive      |
             | g,h       | second,turn,turn    | depart,turn right,arrive     |
             | g,a       | second,first,first  | depart,new name left,arrive  |
+
+    Scenario: Splitting Road with many lanes
+        Given the node map
+            |   |   |   |   |   |   |   |   |   | f |   | e |
+            |   |   |   |   |   |   |   |   |   |   |   |   |
+            |   |   |   |   |   |   |   |   |   |   |   |   |
+            |   |   |   |   |   |   |   |   |   |   |   |   |
+            |   |   |   |   |   |   |   |   |   |   |   |   |
+            |   |   |   |   |   |   |   |   |   |   |   |   |
+            | a |   |   |   |   |   | b |   |   |   |   |   |
+            |   |   |   |   |   |   |   |   |   |   |   |   |
+            |   |   |   |   |   |   |   |   |   |   |   |   |
+            |   |   |   |   |   |   |   |   |   |   |   |   |
+            |   |   |   |   |   |   |   |   |   |   |   |   |
+            |   |   |   |   |   |   |   |   |   |   |   |   |
+            |   |   |   |   |   |   |   |   |   | c |   | d |
+
+        And the ways
+            | nodes | highway | name | lanes | oneway |
+            | ab    | primary | road | 4     | no     |
+            | bcd   | primary | road | 2     | yes    |
+            | feb   | primary | road | 2     | yes    |
+
+        When I route I should get
+            | waypoints | route     | turns         | intersections |
+            | a,d       | road,road | depart,arrive |               |
+            | e,a       | road,road | depart,arrive |               |
