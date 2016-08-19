@@ -30,6 +30,13 @@ double haversineDistance(const Coordinate first_coordinate, const Coordinate sec
 
 double greatCircleDistance(const Coordinate first_coordinate, const Coordinate second_coordinate);
 
+// Find the closest distance and location between coordinate and the line connecting source and
+// target:
+//             coordinate
+//                 |
+//                 |
+// source -------- x -------- target.
+// returns x as well as the distance between source and x as ratio ([0,1])
 inline std::pair<double, FloatCoordinate> projectPointOnSegment(const FloatCoordinate &source,
                                                                 const FloatCoordinate &target,
                                                                 const FloatCoordinate &coordinate)
